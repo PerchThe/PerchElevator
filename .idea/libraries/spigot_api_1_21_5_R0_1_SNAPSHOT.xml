@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="spigot-api-1.21.5-R0.1-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/Desktop/spigot-api-1.21.5-R0.1-SNAPSHOT.jar!/" />
+      <root url="jar://D:/EssentialsX-2.21.0.jar!/" />
+      <root url="jar://D:/gson-2.13.1.jar!/" />
+      <root url="jar://D:/guava-33.4.8-jre.jar!/" />
+      <root url="jar://D:/bungeecord-chat-1.21-R0.2.jar!/" />
+      <root url="jar://$USER_HOME$/Desktop/CombatLogX.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

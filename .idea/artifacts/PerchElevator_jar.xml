@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="PerchElevator:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/PerchElevator_jar</output-path>
+    <root id="archive" name="PerchElevator.jar">
+      <element id="module-output" name="PerchElevator" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/plugin.yml" />
+    </root>
+  </artifact>
+</component>
