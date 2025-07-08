@@ -1,0 +1,40 @@
+plugins {
+    id 'java'
+}
+
+group = 'me.perch.elevator'
+version = '1.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Use local Spigot API JAR
+    compileOnly files('libs/spigot-api-1.21.5-R0.1-SNAPSHOT.jar')
+
+    // EssentialsX and BungeeCord Chat from local libs folder (filenames must match exactly!)
+    compileOnly files('libs/EssentialsX-2.21.1-dev+5-dabe687.jar')
+    compileOnly files('libs/bungeecord-chat-1.20-R0.2-deprecated+build.19.jar')
+
+    // Gson and Guava from Maven Central
+    implementation 'com.google.code.gson:gson:2.11.0'
+    implementation 'com.google.guava:guava:33.4.8-jre'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'me.perch.elevator.Main'
+        )
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
