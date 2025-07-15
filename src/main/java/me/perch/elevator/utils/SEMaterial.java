@@ -701,6 +701,9 @@ public enum SEMaterial {
    CRIMSON_BUTTON,
    POLISHED_BLACKSTONE_BUTTON,
    EMERALD_BLOCK,
+   OCHRE_FROGLIGHT,
+   VERDANT_FROGLIGHT,
+   PEARLESCENT_FROGLIGHT,
    CHISELED_COPPER;
 
    public static final EnumSet<SEMaterial> VALUES = EnumSet.allOf(SEMaterial.class);
