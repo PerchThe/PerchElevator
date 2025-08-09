@@ -6,7 +6,7 @@ import me.perch.elevator.Variables;
 import org.bukkit.entity.Player;
 
 public final class TitleBarUtil {
-   public void sendTitleBar(Player player, Direction direction) {
+   public static void sendTitleBar(Player player, Direction direction) {
       Variables variables = Variables.getInstance();
       if (!variables.isTitleBarEnabled()) return;
 
