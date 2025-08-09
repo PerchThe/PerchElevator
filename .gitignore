@@ -33,7 +33,6 @@ nbdist/
 ### Gradle ###
 .gradle/
 build/
-!gradle/wrapper/gradle-wrapper.jar
 
 ### Logs ###
 *.log
@@ -52,7 +51,6 @@ Desktop.ini
 
 # Minecraft plugin jars and local libraries
 libs/
-*.jar
 
 # Miscellaneous
 Get
