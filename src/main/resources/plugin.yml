@@ -1,5 +1,5 @@
 name: PerchElevator
-version: 1.0.0
+version: '${version}'
 api-version: 1.13
 author: KayaLambrex
 main: me.perch.elevator.Main
