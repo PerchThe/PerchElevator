@@ -39,10 +39,10 @@ public class Events implements Listener {
     public static final Map<Player, Cooldown> elevationCooldown = new HashMap<>();
     private static final DecimalFormat LOCATION_DECIMAL_FORMAT = new DecimalFormat("#.####");
     private static final NumberFormat NUMBER_FORMAT_INSTANCE;
-    private final Main main;
+    private final ElevatorPlugin elevatorPlugin;
 
-    Events(Main main) {
-        this.main = main;
+    Events(ElevatorPlugin elevatorPlugin) {
+        this.elevatorPlugin = elevatorPlugin;
     }
 
     @EventHandler
@@ -216,7 +216,7 @@ public class Events implements Listener {
                                 (new Elevator(player, this.current, finalComboData, direction, finalType, finalElevatorCheck)).elevator();
                             }
                         }
-                    }).runTaskTimer(this.main, 0L, 1L);
+                    }).runTaskTimer(this.elevatorPlugin, 0L, 1L);
                 }
             }
         }

@@ -2,7 +2,7 @@ package me.perch.elevator.elevator;
 
 import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
-import me.perch.elevator.Main;
+import me.perch.elevator.ElevatorPlugin;
 import me.perch.elevator.Variables;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -26,7 +26,7 @@ public class ElevationHandler implements Listener {
    static void elevate(Player player, Location destination) {
       if (Variables.getInstance().isTemporaryInvulnerable()) {
          TEMP_PROTECTED.add(player.getUniqueId());
-         Bukkit.getScheduler().runTaskLater(Main.getPlugin(Main.class), () -> {
+         Bukkit.getScheduler().runTaskLater(ElevatorPlugin.getPlugin(ElevatorPlugin.class), () -> {
             TEMP_PROTECTED.remove(player.getUniqueId());
          }, 2L);
       }

@@ -1,7 +1,7 @@
 package me.perch.elevator.elevator;
 
+import me.perch.elevator.ElevatorPlugin;
 import me.perch.elevator.Events;
-import me.perch.elevator.Main;
 import me.perch.elevator.Variables;
 import java.time.Instant;
 import org.bukkit.entity.Player;
@@ -23,7 +23,7 @@ public class Cooldown {
             this.cancel();
             Events.elevationCooldown.remove(Cooldown.this.player);
          }
-      }).runTaskLater(Main.getPlugin(Main.class), Variables.getInstance().getElevatorCooldown());
+      }).runTaskLater(ElevatorPlugin.getPlugin(ElevatorPlugin.class), Variables.getInstance().getElevatorCooldown());
    }
 
    public long getTimeLeft() {

@@ -20,7 +20,7 @@ public final class Variables {
    private static final int SERVER_DEFAULT_MIN_Y;
    private static final int SERVER_DEFAULT_MAX_Y;
    private static Variables vars;
-   private final Main main;
+   private final ElevatorPlugin elevatorPlugin;
    private int maxDistance;
    private int minY;
    private int maxY;
@@ -67,7 +67,7 @@ public final class Variables {
    private Variables() {
       this.minY = SERVER_DEFAULT_MIN_Y;
       this.maxY = SERVER_DEFAULT_MAX_Y;
-      this.main = Main.getPlugin(Main.class);
+      this.elevatorPlugin = ElevatorPlugin.getPlugin(ElevatorPlugin.class);
       this.loadVariables();
    }
 
@@ -108,7 +108,7 @@ public final class Variables {
    }
 
    void loadVariables() {
-      FileConfiguration config = this.main.getConfig();
+      FileConfiguration config = this.elevatorPlugin.getConfig();
       this.maxDistance = config.getInt("maxDistance");
       if (config.getBoolean("overrideY", false)) {
          this.minY = config.getInt("minY", SERVER_DEFAULT_MIN_Y);
@@ -125,7 +125,7 @@ public final class Variables {
       this.arrowColorUp = config.getString("arrow_color_up");
       this.arrowColorDown = config.getString("arrow_color_down");
       this.arrowSize = config.getDouble("arrow_size");
-      this.combinations = (List)config.getStringList(config.contains("Combinations") ? "Combinations" : "combinations").stream().flatMap((combo) -> {
+      this.combinations = config.getStringList(config.contains("Combinations") ? "Combinations" : "combinations").stream().flatMap((combo) -> {
          try {
             return Stream.of(new Combination(combo));
          } catch (IllegalArgumentException var2) {
@@ -150,9 +150,9 @@ public final class Variables {
       this.elevatorCanceledMessage = MessageUtil.translate(config.getString("elevatorCanceledMessage", "&c&lElevation canceled!"));
       this.elevatorDelayMessage = MessageUtil.translate(config.getString("elevatorDelayMessage", "&a&lElevation in %seconds% seconds!"));
       this.bossBarEnabled = config.getBoolean("bossBarEnabled", true);
-         this.bossBarColor = BarColor.valueOf(config.getString("bossBarColor", "RED"));
-         this.bossBarStyle = BarStyle.valueOf(config.getString("bossBarStyle", "SOLID"));
-         this.bossBarMessage = config.getString("bossBarMessage", "&eFloor %floor% of %totalFloors%");
+      this.bossBarColor = BarColor.valueOf(config.getString("bossBarColor", "RED"));
+      this.bossBarStyle = BarStyle.valueOf(config.getString("bossBarStyle", "SOLID"));
+      this.bossBarMessage = config.getString("bossBarMessage", "&eFloor %floor% of %totalFloors%");
       this.elevatorSoundUp = new ElevatorSound(config.getConfigurationSection("elevatorSound.up"), 0);
       this.elevatorSoundDown = new ElevatorSound(config.getConfigurationSection("elevatorSound.down"), 1);
       this.lazyCheckTop = config.getBoolean("lazyCheck.top", false);
@@ -176,8 +176,8 @@ public final class Variables {
       }).filter(Objects::nonNull).collect(Collectors.toList());
    }
 
-   public Main getMain() {
-      return this.main;
+   public ElevatorPlugin getMain() {
+      return this.elevatorPlugin;
    }
 
    public int getMaxDistance() {

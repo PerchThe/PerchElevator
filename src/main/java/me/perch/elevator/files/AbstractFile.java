@@ -1,6 +1,7 @@
 package me.perch.elevator.files;
 
-import me.perch.elevator.Main;
+import me.perch.elevator.ElevatorPlugin;
+
 import java.io.File;
 import java.io.IOException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -10,11 +11,11 @@ abstract class AbstractFile {
    private final YamlConfiguration config;
 
    AbstractFile(String name) {
-      this.file = new File(((Main)Main.getPlugin(Main.class)).getDataFolder(), name);
+      this.file = new File((ElevatorPlugin.getPlugin(ElevatorPlugin.class)).getDataFolder(), name);
       if (!this.file.exists()) {
          try {
             this.file.createNewFile();
-         } catch (IOException var3) {
+         } catch (IOException exception) {
          }
       }
 
@@ -37,8 +38,8 @@ abstract class AbstractFile {
    void save() {
       try {
          this.config.save(this.file);
-      } catch (IOException var2) {
-         var2.printStackTrace();
+      } catch (IOException exception) {
+         exception.printStackTrace();
       }
 
    }

@@ -38,7 +38,7 @@ public final class MessagesFile extends AbstractFile {
    }
 
    public void setDefaults() {
-      this.setHeader(new String[]{"This is the Message file for all Simple Elevator messages.", "", "All messages are fully customizable and support color codes, formatting and ASCII symbols.", "HEX color codes are supported in 1.16+. The format is &#XXXXXX e.g. '&#XXXXXXYour message'", "Set the Prefix and use %prefix% to add the corresponding prefix to a message.", "Prepend any message with <ActionBar> to send it as an ActionBar message.", "Leave a message blank ('') to disable it.", "", "You can also create messages with Hover and Click events. Syntax options: (Space between comma and quote is NOT allowed)", " - [\"Message\",\"/Command\"]", " - [\"Message\",\"Hover\"]", " - [\"Message\",\"/Command\",\"Hover\"]", " - [\"Message\",\"/Command\",\"Suggest\"]", " - [\"Message\",\"/Command\",\"Hover\",\"Suggest\"]", "You can add as many events to a message as you want. Example:", "'%prefix% &cInvalid arguments! [\"&c&n&oHelp\",\"/se help\",\"&aClick to get help!\"]'", "The \"Suggest\" tag is used if the click event should suggest the command. Default is Run."});
+      this.setHeader("This is the Message file for all Simple Elevator messages.", "", "All messages are fully customizable and support color codes, formatting and ASCII symbols.", "HEX color codes are supported in 1.16+. The format is &#XXXXXX e.g. '&#XXXXXXYour message'", "Set the Prefix and use %prefix% to add the corresponding prefix to a message.", "Prepend any message with <ActionBar> to send it as an ActionBar message.", "Leave a message blank ('') to disable it.", "", "You can also create messages with Hover and Click events. Syntax options: (Space between comma and quote is NOT allowed)", " - [\"Message\",\"/Command\"]", " - [\"Message\",\"Hover\"]", " - [\"Message\",\"/Command\",\"Hover\"]", " - [\"Message\",\"/Command\",\"Suggest\"]", " - [\"Message\",\"/Command\",\"Hover\",\"Suggest\"]", "You can add as many events to a message as you want. Example:", "'%prefix% &cInvalid arguments! [\"&c&n&oHelp\",\"/se help\",\"&aClick to get help!\"]'", "The \"Suggest\" tag is used if the click event should suggest the command. Default is Run.");
       this.prefix = (String)this.add("Prefix", "&7[&eSimple Elevators&7]");
       this.invalidPermission = (String)this.add("Messages.General.InvalidPermission", "%prefix% &cYou do not have permission to do this!");
       this.playerOnly = (String)this.add("Messages.General.PlayerOnly", "%prefix% &cCommand can only be used as a Player!");
@@ -62,8 +62,8 @@ public final class MessagesFile extends AbstractFile {
    void save() {
       try {
          this.getConfig().save(this.getFile());
-      } catch (IOException var2) {
-         var2.printStackTrace();
+      } catch (IOException exception) {
+         exception.printStackTrace();
       }
 
    }

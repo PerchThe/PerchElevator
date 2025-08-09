@@ -2,7 +2,7 @@ name: PerchElevator
 version: '${version}'
 api-version: 1.13
 author: KayaLambrex
-main: me.perch.elevator.Main
+main: me.perch.elevator.ElevatorPlugin
 softdepend:
   - Essentials
 commands:
