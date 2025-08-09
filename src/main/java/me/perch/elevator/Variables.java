@@ -67,7 +67,7 @@ public final class Variables {
    private Variables() {
       this.minY = SERVER_DEFAULT_MIN_Y;
       this.maxY = SERVER_DEFAULT_MAX_Y;
-      this.main = (Main)Main.getPlugin(Main.class);
+      this.main = Main.getPlugin(Main.class);
       this.loadVariables();
    }
 
