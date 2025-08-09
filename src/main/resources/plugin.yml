@@ -5,11 +5,6 @@ author: KayaLambrex
 main: me.perch.elevator.ElevatorPlugin
 softdepend:
   - Essentials
-commands:
-  perchelevator:
-    usage: /perchelevator reload
-    description: Reloads the PerchElevator config
-    permission: perchelevator.reload
 permissions:
   perchelevator.reload:
     description: Permission to reload PerchElevator config.
