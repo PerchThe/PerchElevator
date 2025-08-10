@@ -23,7 +23,7 @@ public class ElevationHandler implements Listener {
    private static final Set<UUID> TEMP_PROTECTED = new HashSet();
    private static final ElevationHandler.SunLightPlugin sunLightPlugin = new ElevationHandler.SunLightPlugin();
 
-   static void elevate(Player player, Location destination) {
+   public static void elevate(Player player, Location destination) {
       if (Variables.getInstance().isTemporaryInvulnerable()) {
          TEMP_PROTECTED.add(player.getUniqueId());
          Bukkit.getScheduler().runTaskLater(ElevatorPlugin.getPlugin(ElevatorPlugin.class), () -> {

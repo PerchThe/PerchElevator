@@ -12,9 +12,9 @@ import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-class ArrowCreator {
+public class ArrowCreator {
 
-   void arrow(Player p, Direction direction) {
+   public void arrow(Player p, Direction direction) {
       Location pLoc = p.getLocation();
       double arrowSize = Variables.getInstance().getArrowSize();
       double[] color;

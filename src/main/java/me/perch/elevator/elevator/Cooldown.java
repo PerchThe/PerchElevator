@@ -11,7 +11,7 @@ public class Cooldown {
    private final Player player;
    private final long targetTime;
 
-   Cooldown(Player player) {
+   public Cooldown(Player player) {
       this.player = player;
       this.targetTime = Instant.now().getEpochSecond() + Variables.getInstance().getElevatorCooldown() / 20L;
       this.startCooldown();

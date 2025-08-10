@@ -12,7 +12,7 @@ public class CombinationData {
    private final SEMaterial.SpecialType topSpecialType;
    private final int customMaxDistance;
 
-   CombinationData(Block topBlock, Block botBlock, int comboIndex, SEMaterial.SpecialType topSpecialType, int customMaxDistance) {
+   public CombinationData(Block topBlock, Block botBlock, int comboIndex, SEMaterial.SpecialType topSpecialType, int customMaxDistance) {
       this.topBlock = topBlock;
       this.topMaterial = SEMaterial.match(topBlock, false);
       this.botBlock = botBlock;

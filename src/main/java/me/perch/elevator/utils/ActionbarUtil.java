@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 
 public final class ActionbarUtil {
 
-   public static void sendMessage(Player player, String message) {
+   public static void sendActionbar(Player player, String message) {
       Variables variables = Variables.getInstance();
       if (!variables.isAbEnabled()) return;
 

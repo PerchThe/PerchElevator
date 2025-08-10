@@ -18,21 +18,17 @@ public final class CombinationCheck {
       }
 
       SEMaterial botBlockMaterial = SEMaterial.match(bottom.getType().name() + (!Variables.PRE_1_13 ? ":0" : ":" + bottom.getData()));
-      if (Stream.of(SEMaterial.AIR, SEMaterial.CAVE_AIR, SEMaterial.VOID_AIR).anyMatch((seMaterial) -> {
-         return seMaterial == topBlockMaterial;
-      })) {
-         return null;
-      } else {
-         List<Combination> combinations = Variables.getInstance().getCombinations();
+       if (Stream.of(SEMaterial.AIR, SEMaterial.CAVE_AIR, SEMaterial.VOID_AIR).noneMatch((seMaterial) -> seMaterial == topBlockMaterial)) {
+           List<Combination> combinations = Variables.getInstance().getCombinations();
 
-         for(int i = 0; i < combinations.size(); ++i) {
-            Combination combination = combinations.get(i);
-            if ((topBlockMaterial == combination.getTopComboMaterial() || combination.getTopComboMaterial() == null) && (botBlockMaterial == combination.getBotComboMaterial() || combination.getBotComboMaterial() == null)) {
-               return new CombinationData(combination.getTopComboMaterial() == null ? null : top, combination.getBotComboMaterial() == null ? null : bottom, i + 1, SEMaterial.SpecialType.of(topBlockMaterial), combination.getCustomMaxDistance());
-            }
-         }
+           for (int i = 0; i < combinations.size(); ++i) {
+               Combination combination = combinations.get(i);
+               if ((topBlockMaterial == combination.getTopComboMaterial() || combination.getTopComboMaterial() == null) && (botBlockMaterial == combination.getBotComboMaterial() || combination.getBotComboMaterial() == null)) {
+                   return new CombinationData(combination.getTopComboMaterial() == null ? null : top, combination.getBotComboMaterial() == null ? null : bottom, i + 1, SEMaterial.SpecialType.of(topBlockMaterial), combination.getCustomMaxDistance());
+               }
+           }
 
-         return null;
-      }
+       }
+       return null;
    }
 }

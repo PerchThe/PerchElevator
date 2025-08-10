@@ -59,7 +59,7 @@ public final class MessagesFile extends AbstractFile {
       this.save();
    }
 
-   void save() {
+   public void save() {
       try {
          this.getConfig().save(this.getFile());
       } catch (IOException exception) {

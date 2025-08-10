@@ -205,10 +205,10 @@ public class Events implements Listener {
                             if (!isOnElevator && Variables.getInstance().getDelay() != 0L) {
                                 this.cancel();
                                 playerData.setDelayed(false);
-                                ActionbarUtil.sendMessage(player, Variables.getInstance().getElevatorCanceledMessage());
+                                ActionbarUtil.sendActionbar(player, Variables.getInstance().getElevatorCanceledMessage());
                             } else if (this.ticksWaited < Variables.getInstance().getDelay() && !player.isOp()) {
                                 this.timeLeft = this.timeLeft <= 0 ? 0 : (int)(Variables.getInstance().getDelay() - this.ticksWaited) / 20;
-                                ActionbarUtil.sendMessage(player, Variables.getInstance().getElevatorDelayMessage().replaceAll("%seconds%", String.valueOf(this.timeLeft)));
+                                ActionbarUtil.sendActionbar(player, Variables.getInstance().getElevatorDelayMessage().replaceAll("%seconds%", String.valueOf(this.timeLeft)));
                                 ++this.ticksWaited;
                             } else {
                                 this.cancel();

@@ -44,7 +44,7 @@ public final class MessageUtil {
          }
 
          if (player != null && actionbar) {
-            ActionbarUtil.sendMessage(player, message);
+            ActionbarUtil.sendActionbar(player, message);
          } else if (!message.contains("[\"") && !message.contains("\"]")) {
             if (player != null) {
                player.sendMessage(message);

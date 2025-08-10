@@ -11,7 +11,7 @@ final class CustomJSONParser {
    private final String message;
    private int stringProgress = 0;
 
-   BaseComponent parseMessage() {
+   public BaseComponent parseMessage() {
       while(true) {
          int eventStart = this.message.indexOf("[\"", this.stringProgress);
          int eventEnd = this.message.indexOf("\"]", this.stringProgress + 1);
