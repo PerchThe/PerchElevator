@@ -351,12 +351,7 @@ public final class Variables {
    static {
       PRE_1_13 = Stream.of("1.8", "1.9", "1.10", "1.11", "1.12").anyMatch(Bukkit.getVersion()::contains);
 
-      if (!PRE_1_13 && !Stream.of("1.13", "1.14", "1.15", "1.16").anyMatch(Bukkit.getVersion()::contains)) {
-         SERVER_DEFAULT_MIN_Y = -64;
-         SERVER_DEFAULT_MAX_Y = 321;
-      } else {
-         SERVER_DEFAULT_MIN_Y = 0;
-         SERVER_DEFAULT_MAX_Y = 257;
-      }
+      SERVER_DEFAULT_MIN_Y = -64;
+      SERVER_DEFAULT_MAX_Y = 321;
    }
 }
