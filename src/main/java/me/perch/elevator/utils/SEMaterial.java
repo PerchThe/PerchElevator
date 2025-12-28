@@ -704,6 +704,7 @@ public enum SEMaterial {
    OCHRE_FROGLIGHT,
    VERDANT_FROGLIGHT,
    PEARLESCENT_FROGLIGHT,
+   SEA_LANTERN,
    CHISELED_COPPER;
 
    public static final EnumSet<SEMaterial> VALUES = EnumSet.allOf(SEMaterial.class);

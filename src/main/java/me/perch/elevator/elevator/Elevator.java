@@ -67,7 +67,7 @@ public class Elevator {
 
    private boolean matchesTopMaterial(Location targetTop) {
       return this.combinationData.getTopMaterial() == null
-          || SEMaterial.match(targetTop.getBlock().getRelative(BlockFace.DOWN), false) == this.combinationData.getTopMaterial();
+              || SEMaterial.match(targetTop.getBlock().getRelative(BlockFace.DOWN), false) == this.combinationData.getTopMaterial();
    }
 
    private Location getPotentialDestination(Location targetTop, Location targetBottom, Location blockFeet, Location blockBody) {
@@ -100,25 +100,16 @@ public class Elevator {
 
       double offset = computeYOffset();
 
-      double xOffset = fractional(this.player.getLocation().getX());
-      double zOffset = fractional(this.player.getLocation().getZ());
-
-      double destX = targetTop.getBlockX() + xOffset;
-      double destZ = targetTop.getBlockZ() + zOffset;
+      double destX = targetTop.getBlockX() + 0.5D;
+      double destZ = targetTop.getBlockZ() + 0.5D;
       double destY = targetTop.getBlockY() - offset;
-
-      Location destFeet = new Location(this.player.getWorld(), destX, destY, destZ);
-      Location destHead = destFeet.clone().add(0, 1, 0);
-
-      // Passability check intentionally removed (original behavior preserved)
-      // if (!destFeet.getBlock().isPassable() || !destHead.getBlock().isPassable()) return null;
 
       return new Location(this.player.getWorld(), destX, destY, destZ, this.player.getLocation().getYaw(), this.player.getLocation().getPitch());
    }
 
    private boolean ignoreListContains(Location loc) {
       return Variables.getInstance().getIgnoreList() == null
-          || Variables.getInstance().getIgnoreList().contains(SEMaterial.match(loc.getBlock().getRelative(BlockFace.DOWN), true));
+              || Variables.getInstance().getIgnoreList().contains(SEMaterial.match(loc.getBlock().getRelative(BlockFace.DOWN), true));
    }
 
    private double computeYOffset() {
@@ -127,10 +118,6 @@ public class Elevator {
          return (this.current.getY() < 0.0D ? 0 : 1) - fracY;
       }
       return this.type.equals(ElevatorType.PLATE) ? 1.0D : 0.0D;
-   }
-
-   private double fractional(double coord) {
-      return coord - Math.floor(coord);
    }
 
    private void elevate(Location destination, int elevatorDist) {
@@ -151,7 +138,7 @@ public class Elevator {
       ElevationHandler.elevate(this.player, destination);
 
       this.playerData.getElevatorBossBar().ifPresent(elevatorBossBar ->
-          elevatorBossBar.display(elevatorBossBar.getCurrentFloor() + (this.direction == Direction.UP ? 1 : -1), elevatorBossBar.getTotalFloors())
+              elevatorBossBar.display(elevatorBossBar.getCurrentFloor() + (this.direction == Direction.UP ? 1 : -1), elevatorBossBar.getTotalFloors())
       );
 
       this.playerData.setCurrentFloor(this.playerData.getCurrentFloor() + (this.direction == Direction.UP ? 1 : -1));
@@ -169,9 +156,9 @@ public class Elevator {
 
       if (!Variables.version("1.7")) {
          ActionbarUtil.sendActionbar(this.player,
-             (this.direction == Direction.UP ? Variables.getInstance().getFloorUp() : Variables.getInstance().getFloorDown())
-                 .replaceAll("%floor%", String.valueOf(this.playerData.getCurrentFloor()))
-                 .replaceAll("%totalFloors%", String.valueOf(this.playerData.getTotalFloors())));
+                 (this.direction == Direction.UP ? Variables.getInstance().getFloorUp() : Variables.getInstance().getFloorDown())
+                         .replaceAll("%floor%", String.valueOf(this.playerData.getCurrentFloor()))
+                         .replaceAll("%totalFloors%", String.valueOf(this.playerData.getTotalFloors())));
          TitleBarUtil.sendTitleBar(this.player, this.direction);
       }
    }
@@ -180,21 +167,14 @@ public class Elevator {
       int lazyFloor = this.elevatorCheck.getLazyFloor(this.direction, this.player.getLocation().getBlockY());
       if (lazyFloor == -1) return;
 
-      double xOffset = fractional(this.player.getLocation().getX());
-      double zOffset = fractional(this.player.getLocation().getZ());
-
       Location destination = new Location(
-          this.player.getWorld(),
-          this.current.getBlockX() + xOffset,
-          lazyFloor + 1,
-          this.current.getBlockZ() + zOffset,
-          this.player.getLocation().getYaw(),
-          this.player.getLocation().getPitch()
+              this.player.getWorld(),
+              this.current.getBlockX() + 0.5D,
+              lazyFloor + 1,
+              this.current.getBlockZ() + 0.5D,
+              this.player.getLocation().getYaw(),
+              this.player.getLocation().getPitch()
       );
-
-      // Passability check intentionally removed (original behavior preserved)
-      // Location destHead = destination.clone().add(0, 1, 0);
-      // if (!destination.getBlock().isPassable() || !destHead.getBlock().isPassable()) return;
 
       elevate(destination, (int) Math.floor(this.current.distance(destination)));
       this.playerData.getElevatorBossBar().ifPresent(ElevatorBossBar::hide);

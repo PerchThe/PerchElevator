@@ -38,7 +38,6 @@ public class ElevationHandler implements Listener {
       } else {
          player.teleport(destination);
       }
-
    }
 
    private static List<Location> preTeleport(Player player) {
@@ -50,7 +49,6 @@ public class ElevationHandler implements Listener {
          } catch (NullPointerException var6) {
          }
       }
-
 
       Location sunlightLastLocation = null;
       if (sunLightPlugin.enabled) {
@@ -69,11 +67,9 @@ public class ElevationHandler implements Listener {
          }
       }
 
-
       if (sunLightPlugin.enabled && sunLightPlugin.getBackLocation(player) != null) {
-         sunLightPlugin.setBackLocation(player, (Location)lastLocations.get(2));
+         sunLightPlugin.setBackLocation(player, (Location)lastLocations.get(1));
       }
-
    }
 
    @EventHandler
@@ -81,7 +77,6 @@ public class ElevationHandler implements Listener {
       if (TEMP_PROTECTED.contains(event.getEntity().getUniqueId())) {
          event.setCancelled(true);
       }
-
    }
 
    private static class SunLightPlugin {
@@ -99,7 +94,6 @@ public class ElevationHandler implements Listener {
                var2.printStackTrace();
             }
          }
-
       }
 
       private Location getBackLocation(Player player) {
@@ -120,7 +114,6 @@ public class ElevationHandler implements Listener {
          } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException var4) {
             var4.printStackTrace();
          }
-
       }
    }
 }
