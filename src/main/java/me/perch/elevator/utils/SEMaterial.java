@@ -708,6 +708,7 @@ public enum SEMaterial {
    CHISELED_COPPER;
 
    public static final EnumSet<SEMaterial> VALUES = EnumSet.allOf(SEMaterial.class);
+   private static final java.util.Map<Material, SEMaterial> FAST_LOOKUP_CACHE = new java.util.EnumMap<>(Material.class);
    private static final Cache<String, SEMaterial> NAME_CACHE = CacheBuilder.newBuilder().softValues().expireAfterAccess(15L, TimeUnit.MINUTES).build();
    private static final Cache<SEMaterial, Optional<Material>> PARSED_CACHE = CacheBuilder.newBuilder().softValues().expireAfterAccess(10L, TimeUnit.MINUTES).concurrencyLevel(Runtime.getRuntime().availableProcessors()).build();
    private static final Pattern FORMAT_PATTERN = Pattern.compile("\\W+");
@@ -732,19 +733,33 @@ public enum SEMaterial {
    public static SEMaterial match(Block block, boolean ignoreData) {
       if (block == null) {
          return null;
+      }
+
+      if (ISFLAT && !(block.getBlockData() instanceof DaylightDetector)) {
+         return FAST_LOOKUP_CACHE.computeIfAbsent(block.getType(), mat ->
+                 matchDefinedSEMaterial(format(mat.name()), (byte) 0)
+         );
+      }
+
+      if (!Variables.PRE_1_13 && block.getBlockData() instanceof DaylightDetector) {
+         return match(block.getType().name() + (((DaylightDetector)block.getBlockData()).isInverted() ? "_INVERTED" : ""));
       } else {
-         return !Variables.PRE_1_13 && block.getBlockData() instanceof DaylightDetector
-                 ? match(block.getType().name() + (((DaylightDetector)block.getBlockData()).isInverted() ? "_INVERTED" : ""))
-                 : match(block.getType().name() + (Variables.PRE_1_13 && !ignoreData ? ":" + block.getData() : ""));
+         return match(block.getType().name() + (Variables.PRE_1_13 && !ignoreData ? ":" + block.getData() : ""));
       }
    }
 
    public static SEMaterial match(String material) {
+      if (material == null) return null;
       String[] split = material.split(":");
       byte data = -1;
       material = split[0];
-      if (split.length != 1 && Stream.of("DAYLIGHT_DETECTOR").noneMatch((s) -> split[0].toLowerCase().contains(s.toLowerCase()))) {
-         data = Byte.parseByte(split[1]);
+      if (split.length != 1) {
+         String lower = split[0].toLowerCase(Locale.ENGLISH);
+         if (!lower.contains("daylight_detector")) {
+            try {
+               data = Byte.parseByte(split[1]);
+            } catch (NumberFormatException ignored) {}
+         }
       }
       return matchDefinedSEMaterial(format(material), data);
    }
@@ -850,7 +865,11 @@ public enum SEMaterial {
    }
 
    public boolean isSpecialType(SEMaterial.SpecialType... specialTypes) {
-      return Stream.of(specialTypes).anyMatch((specialType) -> this.name().contains(specialType.getContainedString()));
+      String name = this.name();
+      for (SpecialType type : specialTypes) {
+         if (name.contains(type.getContainedString())) return true;
+      }
+      return false;
    }
 
    public static enum SpecialType {
@@ -866,11 +885,12 @@ public enum SEMaterial {
       }
 
       public static SEMaterial.SpecialType of(SEMaterial seMaterial) {
-         if (seMaterial == null) return null; // <-- Add this line
-         return Arrays.stream(values())
-                 .filter(specialType -> seMaterial.name().contains(specialType.getContainedString()))
-                 .findFirst()
-                 .orElse(null);
+         if (seMaterial == null) return null;
+         String matName = seMaterial.name();
+         for (SpecialType type : values()) {
+            if (matName.contains(type.getContainedString())) return type;
+         }
+         return null;
       }
 
       public String getContainedString() {

@@ -11,13 +11,12 @@ import me.perch.elevator.files.MessagesFile;
 import me.perch.elevator.utils.ActionbarUtil;
 import me.perch.elevator.utils.MessageUtil;
 import me.perch.elevator.utils.SEMaterial;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.text.ParseException;
+// --- NEW IMPORT ---
+import me.perch.elevator.events.ElevatorAttemptEvent;
+// ------------------
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Stream;
 import org.bukkit.Bukkit;
@@ -37,8 +36,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class Events implements Listener {
     public static final Map<Player, Cooldown> elevationCooldown = new HashMap<>();
-    private static final DecimalFormat LOCATION_DECIMAL_FORMAT = new DecimalFormat("#.####");
-    private static final NumberFormat NUMBER_FORMAT_INSTANCE;
     private final ElevatorPlugin elevatorPlugin;
 
     Events(ElevatorPlugin elevatorPlugin) {
@@ -54,7 +51,6 @@ public class Events implements Listener {
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
 
-        // Ignore elevator logic if the player is in knockback (recently damaged)
         if (player.getNoDamageTicks() > 0) {
             return;
         }
@@ -66,13 +62,15 @@ public class Events implements Listener {
         } else {
             String worldCurrent = player.getWorld().getName();
             List<String> worldList = Variables.getInstance().getEnabledWorlds();
-            ElevatorType type = null;
+
             Location fromLoc = this.loc4Decimals(event.getFrom());
             Location toLoc = this.loc4Decimals(event.getTo());
-            this.loc4Decimals(player.getLocation());
+
             boolean specialBlock = Arrays.asList(0.8125D, 0.875D).contains(fromLoc.getY() - (double)fromLoc.getBlockY()) && fromLoc.getBlockX() == toLoc.getBlockX() && fromLoc.getBlockZ() == toLoc.getBlockZ();
             boolean updateBossBar = fromLoc.getBlockX() != toLoc.getBlockX() || fromLoc.getBlockY() != toLoc.getBlockY() && Math.abs(fromLoc.getY() - toLoc.getY()) < 1.0D || fromLoc.getBlockZ() != toLoc.getBlockZ() && Variables.getInstance().isBossBarEnabled();
+
             if ((worldList.contains(worldCurrent) || worldList.isEmpty()) && (!(toLoc.getY() <= fromLoc.getY()) || updateBossBar)) {
+                ElevatorType type = null;
                 Block toBlock = (new Location(toLoc.getWorld(), (double)toLoc.getBlockX(), (double)(toLoc.getY() > fromLoc.getY() ? fromLoc : toLoc).getBlockY(), (double)toLoc.getBlockZ())).getBlock();
                 CombinationData combinationData = null;
                 if ((double)fromLoc.getBlockY() == fromLoc.getY() || updateBossBar && !specialBlock) {
@@ -100,18 +98,29 @@ public class Events implements Listener {
                     type = ElevatorType.NON_OCCLUDING;
                 }
 
+                // --- NEW CODE: Fire Event for UP/BOSSBAR ---
+                if (combinationData != null) {
+                    ElevatorAttemptEvent attempt = new ElevatorAttemptEvent(player, fromLoc);
+                    Bukkit.getPluginManager().callEvent(attempt);
+                    if (attempt.isCancelled()) {
+                        // If cancelled, we stop everything here. No bossbar, no teleport logic.
+                        return;
+                    }
+                }
+                // -------------------------------------------
+
                 PlayerData playerData = PlayerData.getPlayerData(player, true);
                 ElevatorCheck elevatorCheck = combinationData == null ? null : new ElevatorCheck(player, combinationData, type);
                 if (updateBossBar && !specialBlock) {
                     if (combinationData != null) {
                         elevatorCheck.calculateFloors(toLoc);
-                        elevatorCheck.getNumberOfFloors();
-                        if (elevatorCheck.getNumberOfFloors() > 1) {
+                        int floors = elevatorCheck.getNumberOfFloors();
+                        if (floors > 1) {
                             playerData.getElevatorBossBar().ifPresent((elevatorBossBar) -> {
-                                elevatorBossBar.display(elevatorCheck.getCurrentFloor(toLoc.getBlockY()), elevatorCheck.getNumberOfFloors());
+                                elevatorBossBar.display(elevatorCheck.getCurrentFloor(toLoc.getBlockY()), floors);
                             });
                             playerData.setCurrentFloor(elevatorCheck.getCurrentFloor(toLoc.getBlockY()));
-                            playerData.setTotalFloors(elevatorCheck.getNumberOfFloors());
+                            playerData.setTotalFloors(floors);
                         } else {
                             playerData.getElevatorBossBar().ifPresent(ElevatorBossBar::hide);
                         }
@@ -179,6 +188,16 @@ public class Events implements Listener {
                     type = ElevatorType.NON_OCCLUDING;
                 }
 
+                // --- NEW CODE: Fire Event for DOWN ---
+                if (combinationData != null) {
+                    ElevatorAttemptEvent attempt = new ElevatorAttemptEvent(player, playerLoc);
+                    Bukkit.getPluginManager().callEvent(attempt);
+                    if (attempt.isCancelled()) {
+                        return;
+                    }
+                }
+                // -------------------------------------
+
                 if (combinationData != null && type != null) {
                     this.handleElevation(player, PlayerData.getPlayerData(player, true), combinationData, new ElevatorCheck(player, combinationData, type), combinationData, type, Direction.DOWN, playerLoc);
                 }
@@ -223,17 +242,11 @@ public class Events implements Listener {
     }
 
     private Location loc4Decimals(Location location) {
+        if (location == null) return null;
         Location clone = location.clone();
-
-        try {
-            clone.setY(NUMBER_FORMAT_INSTANCE.parse(LOCATION_DECIMAL_FORMAT.format(clone.getY()).replaceAll(",", ".")).doubleValue());
-        } catch (ParseException var4) {
-        }
-
+        double y = clone.getY();
+        y = Math.round(y * 10000.0) / 10000.0;
+        clone.setY(y);
         return clone;
-    }
-
-    static {
-        NUMBER_FORMAT_INSTANCE = NumberFormat.getInstance(Locale.ENGLISH);
     }
 }
