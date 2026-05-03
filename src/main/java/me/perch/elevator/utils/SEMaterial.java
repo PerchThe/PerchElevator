@@ -712,7 +712,7 @@ public enum SEMaterial {
    private static final Cache<String, SEMaterial> NAME_CACHE = CacheBuilder.newBuilder().softValues().expireAfterAccess(15L, TimeUnit.MINUTES).build();
    private static final Cache<SEMaterial, Optional<Material>> PARSED_CACHE = CacheBuilder.newBuilder().softValues().expireAfterAccess(10L, TimeUnit.MINUTES).concurrencyLevel(Runtime.getRuntime().availableProcessors()).build();
    private static final Pattern FORMAT_PATTERN = Pattern.compile("\\W+");
-   private static final int VERSION = Integer.parseInt(getMajorVersion(Bukkit.getVersion()).substring(2));
+   private static final int VERSION = getMajorVersion();
    private static final boolean ISFLAT = supports(13);
    private final byte data;
    private final String[] legacy;
@@ -803,19 +803,13 @@ public enum SEMaterial {
       return VERSION >= version;
    }
 
-   private static String getMajorVersion(String version) {
-      int index = version.lastIndexOf("MC:");
-      if (index != -1) {
-         version = version.substring(index + 4, version.length() - 1);
-      } else if (version.endsWith("SNAPSHOT")) {
-         index = version.indexOf(45);
-         version = version.substring(0, index);
+   private static int getMajorVersion() {
+      try {
+         String version = Bukkit.getBukkitVersion();
+         return Integer.parseInt(version.split("-")[0].split("\\.")[1]);
+      } catch (Exception e) {
+         return 21; // Safe fallback for modern versions if parsing somehow fails
       }
-      int lastDot = version.lastIndexOf(46);
-      if (version.indexOf(46) != lastDot) {
-         version = version.substring(0, lastDot);
-      }
-      return version;
    }
 
    public Material getMaterial() {
