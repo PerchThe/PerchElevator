@@ -1,19 +1,5 @@
 updateChecker: true
 
-# Elevator Combinations:
-# Add/Change as many combinations as you want. First Material is the block under your feet.
-# Syntax: 'Material:Data, Material:Data' and 'Material:Data'.
-# Use 'any' for any block. E.g. 'any, Redstone_block' or 'Quartz_Block, any'.
-# If using 'any' as the top block the block at the elevators in the column has to be of the
-# same height e.g. if you're standing on a slab then you can only elevate to slabs.
-# You can set a custom maxDistance for individual combinations with a third argument e.g:
-# - 'Quartz_Block, Redstone_block, 10' <- This means you can only place these 10 blocks apart.
-combinations:
-  - 'Quartz_Block, Redstone_block'
-  - 'Step:7, Iron_Block'
-  - 'Carpet:14, Wool:11'
-  - 'Stone:1, dirt:1'
-
 # Enable/Disable worlds:
 # Add worlds(Case-sensitive) to exclusively enable those e.g:
 #
@@ -97,13 +83,6 @@ arrow_color_up: 'green'
 arrow_color_down: 'red'
 # arrow size: (blocks in height)
 arrow_size: 2.0
-
-# Items that Elevators will ignore checking for.
-# These items can be placed in the destination space.
-# Remove/add any item you want. Use valid Material names and IDs.
-# Ignore everything with: ignoreList: 'all'
-# https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
-ignoreList: 'air, void_air, torch, wall_torch, redstone_torch_on, redstone_torch_off, redstone_wall_torch, vine, lever, banner, stone_button, wood_button, oak_button, spruce_button, birch_button, jungle_button, acacia_button, dark_oak_button, sign, sign_post, wall_sign, oak_sign, oak_wall_sign, spruce_sign, spruce_wall_sign, birch_sign, birch_wall_sign, jungle_sign, jungle_wall_sign, acacia_sign, acacia_wall_sign, dark_oak_sign, dark_oak_wall_sign'
 
 # Elevator delay:
 # Set the delay of the elevators. The delay is in ticks (20 ticks == 1 second)

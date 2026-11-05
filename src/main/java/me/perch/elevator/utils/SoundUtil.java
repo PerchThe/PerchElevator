@@ -1,5 +1,9 @@
 package me.perch.elevator.utils;
 
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import org.bukkit.Registry;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
@@ -399,11 +403,12 @@ public enum SoundUtil {
    }
 
    public void playSound(Player player, float volume, float pitch, boolean world) {
-      Sound resolvedSound;
-      try {
-         resolvedSound = Sound.valueOf(this.post19sound);
-      } catch (IllegalArgumentException var7) {
-         resolvedSound = Sound.valueOf(this.pre19sound);
+      Sound resolvedSound = resolveSound(this.post19sound);
+      if (resolvedSound == null) {
+         resolvedSound = resolveSound(this.pre19sound);
+      }
+      if (resolvedSound == null) {
+         throw new IllegalArgumentException("Unknown sound: " + this.post19sound);
       }
 
       if (world) {
@@ -412,5 +417,33 @@ public enum SoundUtil {
          player.playSound(player.getLocation(), resolvedSound, volume, pitch);
       }
 
+   }
+
+   private static volatile Map<String, Sound> SOUND_BY_NAME;
+
+   public static Sound resolveSound(String name) {
+      if (name == null) {
+         return null;
+      }
+      Map<String, Sound> map = SOUND_BY_NAME;
+      if (map == null) {
+         synchronized (SoundUtil.class) {
+            if ((map = SOUND_BY_NAME) == null) {
+               Map<String, Sound> built = new HashMap<>();
+               Registry<Sound> registry = Registry.SOUND_EVENT;
+               registry.keyStream().forEach(key -> {
+                  Sound sound = registry.get(key);
+                  if (sound == null) {
+                     return;
+                  }
+                  String path = key.getKey().toUpperCase(Locale.ROOT);
+                  built.putIfAbsent(path.replace('.', '_'), sound);
+                  built.putIfAbsent(path, sound);
+               });
+               SOUND_BY_NAME = map = built;
+            }
+         }
+      }
+      return map.get(name.toUpperCase(Locale.ROOT));
    }
 }

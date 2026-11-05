@@ -744,7 +744,7 @@ public enum SEMaterial {
       if (!Variables.PRE_1_13 && block.getBlockData() instanceof DaylightDetector) {
          return match(block.getType().name() + (((DaylightDetector)block.getBlockData()).isInverted() ? "_INVERTED" : ""));
       } else {
-         return match(block.getType().name() + (Variables.PRE_1_13 && !ignoreData ? ":" + block.getData() : ""));
+         return match(block.getType().name());
       }
    }
 
@@ -805,8 +805,9 @@ public enum SEMaterial {
 
    private static int getMajorVersion() {
       try {
-         String version = Bukkit.getBukkitVersion();
-         return Integer.parseInt(version.split("-")[0].split("\\.")[1]);
+         String version = Bukkit.getBukkitVersion().split("-")[0];
+         String[] parts = version.split("\\.");
+         return Integer.parseInt(parts[0].equals("1") ? parts[1] : parts[0]);
       } catch (Exception e) {
          return 21; // Safe fallback for modern versions if parsing somehow fails
       }
