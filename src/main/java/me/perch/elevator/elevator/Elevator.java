@@ -8,10 +8,8 @@ import me.perch.elevator.Variables;
 import me.perch.elevator.files.MessagesFile;
 import me.perch.elevator.utils.ActionbarUtil;
 import me.perch.elevator.utils.MessageUtil;
-import me.perch.elevator.utils.SEMaterial;
 import me.perch.elevator.utils.TitleBarUtil;
 import org.bukkit.Location;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
 
@@ -39,85 +37,31 @@ public class Elevator {
       int currentBlockY = (int) Math.ceil(this.player.getLocation().getY());
 
       if (this.direction.equals(Direction.UP)) {
-         scanAndElevate(currentBlockY + 1, Variables.getInstance().getMaxY(), 1);
-         tryLazyElevation();
+         if (!scanAndElevate(currentBlockY + 1, Variables.getInstance().getMaxY(), 1)) {
+            tryLazyElevation();
+         }
       } else if (this.direction.equals(Direction.DOWN)) {
-         scanAndElevate(currentBlockY - 1, Variables.getInstance().getMinY(), -1);
-         tryLazyElevation();
+         if (!scanAndElevate(currentBlockY - 1, Variables.getInstance().getMinY(), -1)) {
+            tryLazyElevation();
+         }
       }
    }
 
-   private void scanAndElevate(int startY, int endY, int step) {
+   private boolean scanAndElevate(int startY, int endY, int step) {
       for (int y = startY; step > 0 ? y < endY : y > endY; y += step) {
-         Location targetTop = new Location(this.player.getWorld(), this.current.getBlockX(), y, this.current.getBlockZ());
-         Location targetBottom = new Location(this.player.getWorld(), this.current.getBlockX(), y - 1, this.current.getBlockZ());
-         Location blockFeet = new Location(this.player.getWorld(), targetTop.getBlockX(), targetTop.getBlockY() + 1, targetTop.getBlockZ());
-         Location blockBody = new Location(this.player.getWorld(), targetTop.getBlockX(), targetTop.getBlockY() + 2, targetTop.getBlockZ());
-
-         if (matchesTopMaterial(targetTop)) {
-            Location destination = getPotentialDestination(targetTop, targetBottom, blockFeet, blockBody);
-            if (destination != null) {
-               int elevatorDist = (int) Math.floor(this.current.distance(destination));
-               elevate(destination, elevatorDist);
-               return;
-            }
+         if (ElevatorRule.isFloor(this.player.getWorld(), this.current.getBlockX(), y, this.current.getBlockZ())) {
+            Location destination = new Location(
+                    this.player.getWorld(),
+                    this.current.getBlockX() + 0.5D,
+                    y,
+                    this.current.getBlockZ() + 0.5D,
+                    this.player.getLocation().getYaw(),
+                    this.player.getLocation().getPitch());
+            elevate(destination, (int) Math.floor(this.current.distance(destination)));
+            return true;
          }
       }
-   }
-
-   private boolean matchesTopMaterial(Location targetTop) {
-      return this.combinationData.getTopMaterial() == null
-              || SEMaterial.match(targetTop.getBlock().getRelative(BlockFace.DOWN), false) == this.combinationData.getTopMaterial();
-   }
-
-   private Location getPotentialDestination(Location targetTop, Location targetBottom, Location blockFeet, Location blockBody) {
-      if (this.combinationData.getBotMaterial() != null) {
-         SEMaterial bottom = SEMaterial.match(targetBottom.getBlock().getRelative(BlockFace.DOWN), false);
-         if (bottom != this.combinationData.getBotMaterial() || bottom.getData() != this.combinationData.getBotMaterial().getData()) {
-            return null;
-         }
-      }
-
-      if (this.type != ElevatorType.PLATE) {
-         SEMaterial top = SEMaterial.match(targetTop.getBlock().getRelative(BlockFace.DOWN), false);
-         if (top.isSpecialType(SEMaterial.SpecialType.TRAPDOOR)) {
-            return null;
-         }
-         if (this.combinationData.getTopMaterial() != null && top.getData() != this.combinationData.getTopMaterial().getData()) {
-            return null;
-         }
-      }
-
-      if (this.type.equals(ElevatorType.BLOCK)) {
-         if (!ignoreListContains(blockFeet) || !ignoreListContains(blockBody)) {
-            return null;
-         }
-      } else if (this.type.equals(ElevatorType.NON_OCCLUDING)) {
-         if (!ignoreListContains(blockFeet)) {
-            return null;
-         }
-      }
-
-      double offset = computeYOffset();
-
-      double destX = targetTop.getBlockX() + 0.5D;
-      double destZ = targetTop.getBlockZ() + 0.5D;
-      double destY = targetTop.getBlockY() - offset;
-
-      return new Location(this.player.getWorld(), destX, destY, destZ, this.player.getLocation().getYaw(), this.player.getLocation().getPitch());
-   }
-
-   private boolean ignoreListContains(Location loc) {
-      return Variables.getInstance().getIgnoreList() == null
-              || Variables.getInstance().getIgnoreList().contains(SEMaterial.match(loc.getBlock().getRelative(BlockFace.DOWN), true));
-   }
-
-   private double computeYOffset() {
-      double fracY = this.current.getY() - (int) this.current.getY();
-      if (1.0D - fracY != 1.0D) {
-         return (this.current.getY() < 0.0D ? 0 : 1) - fracY;
-      }
-      return this.type.equals(ElevatorType.PLATE) ? 1.0D : 0.0D;
+      return false;
    }
 
    private void elevate(Location destination, int elevatorDist) {
@@ -165,7 +109,7 @@ public class Elevator {
 
    private void tryLazyElevation() {
       int lazyFloor = this.elevatorCheck.getLazyFloor(this.direction, this.player.getLocation().getBlockY());
-      if (lazyFloor == -1) return;
+      if (lazyFloor == Integer.MIN_VALUE) return;
 
       Location destination = new Location(
               this.player.getWorld(),

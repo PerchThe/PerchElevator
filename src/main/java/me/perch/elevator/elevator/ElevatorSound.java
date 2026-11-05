@@ -27,14 +27,13 @@ public class ElevatorSound {
          try {
             SoundUtil.valueOf(this.sound).playSound(player, this.volume, this.pitch, this.world);
          } catch (NullPointerException | IllegalArgumentException var5) {
-            try {
-               if (this.world) {
-                  player.getWorld().playSound(player.getLocation(), Sound.valueOf(this.sound.toUpperCase()), this.volume, this.pitch);
-               } else {
-                  player.playSound(player.getLocation(), Sound.valueOf(this.sound.toUpperCase()), this.volume, this.pitch);
-               }
-            } catch (NullPointerException | IllegalArgumentException var4) {
+            Sound resolved = SoundUtil.resolveSound(this.sound);
+            if (resolved == null) {
                Bukkit.getConsoleSender().sendMessage(MessageUtil.translate("&7[&cSimple Elevators&7] &cConfig contains invalid sound enum."));
+            } else if (this.world) {
+               player.getWorld().playSound(player.getLocation(), resolved, this.volume, this.pitch);
+            } else {
+               player.playSound(player.getLocation(), resolved, this.volume, this.pitch);
             }
          }
 

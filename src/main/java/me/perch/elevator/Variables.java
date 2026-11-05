@@ -35,9 +35,7 @@ public final class Variables {
    private String arrowColorUp;
    private String arrowColorDown;
    private double arrowSize;
-   private List<Combination> combinations;
    private List<String> enabledWorlds;
-   private List<SEMaterial> ignoreList;
    private long delay;
    private boolean titleBarEnabled;
    private String titleBarUp;
@@ -85,28 +83,6 @@ public final class Variables {
       vars.loadVariables();
    }
 
-   private static List<SEMaterial> ignoreListConvert(String stringList) {
-      if (stringList.equalsIgnoreCase("all")) {
-         return null;
-      } else {
-         List<SEMaterial> materials = new ArrayList();
-         String[] var2 = stringList.replace(" ", "").split(",");
-         int var3 = var2.length;
-
-         for(int var4 = 0; var4 < var3; ++var4) {
-            String mat = var2[var4];
-            SEMaterial match = SEMaterial.match(mat);
-            if (match != null) {
-               materials.add(match);
-            } else {
-               Bukkit.getConsoleSender().sendMessage(MessageUtil.translate("&c[&eSimple Elevators&c] Unknown material in ignore list: &c" + mat));
-            }
-         }
-
-         return materials;
-      }
-   }
-
    void loadVariables() {
       FileConfiguration config = this.elevatorPlugin.getConfig();
       this.maxDistance = config.getInt("maxDistance");
@@ -125,16 +101,7 @@ public final class Variables {
       this.arrowColorUp = config.getString("arrow_color_up");
       this.arrowColorDown = config.getString("arrow_color_down");
       this.arrowSize = config.getDouble("arrow_size");
-      this.combinations = config.getStringList(config.contains("Combinations") ? "Combinations" : "combinations").stream().flatMap((combo) -> {
-         try {
-            return Stream.of(new Combination(combo));
-         } catch (IllegalArgumentException var2) {
-            Bukkit.getConsoleSender().sendMessage(MessageUtil.translate("&c[&eSimple Elevators&c] Unknown material or height in combo: " + combo));
-            return Stream.empty();
-         }
-      }).collect(Collectors.toList());
       this.enabledWorlds = config.getStringList("enabledworlds");
-      this.ignoreList = ignoreListConvert(config.getString("ignoreList", ""));
       this.createReplaceBlacklist = this.stringToMaterialList(config, "createReplaceBlacklist");
       this.delay = config.getLong("delay", 0L);
       this.titleBarEnabled = config.getBoolean("titleBarEnabled", true);
@@ -236,16 +203,8 @@ public final class Variables {
       return this.arrowSize;
    }
 
-   public List<Combination> getCombinations() {
-      return this.combinations;
-   }
-
    public List<String> getEnabledWorlds() {
       return this.enabledWorlds;
-   }
-
-   public List<SEMaterial> getIgnoreList() {
-      return this.ignoreList;
    }
 
    public long getDelay() {
